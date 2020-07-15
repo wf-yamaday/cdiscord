@@ -1,12 +1,10 @@
 package main
 
 import (
-	"bytes"
 	"log"
 	"os"
 
-	"net/http"
-
+	"github.com/wf-yamaday/cdiscord/discord"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
@@ -15,8 +13,8 @@ var (
 	version  = cdiscord.Command("version", "display version")
 
 	message    = cdiscord.Command("message", "send message to discord")
-	webhookURL = message.Flag("webhook-url", "webhook url").Required().Short('w').String()
 	alertLevel = message.Flag("level", "set alert level ('info' 'danger' 'health' 'warn')").Short('l').String()
+	webhookURL = message.Flag("webhook-url", "webhook url").Required().Short('w').String()
 
 	cdiscordVer = "v0.0.1"
 )
@@ -31,10 +29,10 @@ const (
 )
 
 var colors = map[AlertLevel]string{
-	Danger: "#fc2f2f",
-	Warn:   "#ffcc14",
-	Health: "#27d871",
-	Info:   "#2bb9f2",
+	Danger: "16527151",
+	Warn:   "16763924",
+	Health: "2611313",
+	Info:   "2865650",
 }
 
 func main() {
@@ -43,28 +41,32 @@ func main() {
 		cdiscord.FatalUsage(err.Error())
 	}
 
-	jsonStr := `{"content": "Hello, World!"}`
+	var color string
 
-	req, err := http.NewRequest("POST", *webhookURL, bytes.NewBuffer([]byte(jsonStr)))
-
-	if err != nil {
-		log.Printf("[error]", err)
-		return
+	switch *alertLevel {
+	case "info":
+		color = colors[Info]
+	case "warn":
+		color = colors[Warn]
+	case "danger":
+		color = colors[Danger]
+	case "health":
+		color = colors[Health]
+	default:
+		color = colors[Info]
 	}
 
-	req.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{}
-
-	res, err := client.Do(req)
-
-	if err != nil {
-		log.Printf("[error]", err)
-		return
+	text := "cdiscord"
+	param := discord.EmbedParam{
+		Title:       text,
+		Description: "this is an embedded message",
+		Color:       color,
 	}
 
-	defer res.Body.Close()
+	if ret, err := discord.SendMessage(param, *webhookURL); err != nil {
+		log.Println("[error]", err)
+		log.Println("[error]", string(ret))
+	}
 
 	return
-
 }
