@@ -6,7 +6,8 @@
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -46,4 +47,4 @@ Temporary Items
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
-
+cdiscord
