@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io/ioutil"
 	"log"
 	"os"
 
@@ -56,16 +57,22 @@ func main() {
 		color = colors[Info]
 	}
 
-	text := "cdiscord"
+	in, err := ioutil.ReadAll(os.Stdin)
+	if err != nil {
+		log.Printf("[error] %s", err)
+		return
+	}
+
+	text := "cdiscord message"
 	param := discord.EmbedParam{
 		Title:       text,
-		Description: "this is an embedded message",
+		Description: string(in),
 		Color:       color,
 	}
 
 	if ret, err := discord.SendMessage(param, *webhookURL); err != nil {
-		log.Println("[error]", err)
-		log.Println("[error]", string(ret))
+		log.Printf("[error] %s", err)
+		log.Printf("[error] %s", string(ret))
 	}
 
 	return
