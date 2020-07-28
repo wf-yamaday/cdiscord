@@ -1,11 +1,11 @@
 ﻿package discord
 
-type EmbedParam struct {
-	Title       string `json:"title"`
+type Embeds struct {
 	Description string `json:"description"`
 	Color       string `json:"color"`
 }
 
-type Embeds struct {
-	Embeds []EmbedParam `json:"embeds"`
+type WebhookParam struct {
+	Usename string   `json:"username"`
+	Embeds  []Embeds `json:"embeds"`
 }

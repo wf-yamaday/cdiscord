@@ -7,12 +7,9 @@ import (
 	"net/http"
 )
 
-func SendMessage(param EmbedParam, webhookURL string) ([]byte, error) {
-	payload := Embeds{
-		Embeds: []EmbedParam{param},
-	}
+func SendMessage(param WebhookParam, webhookURL string) ([]byte, error) {
 
-	b, err := json.Marshal(payload)
+	b, err := json.Marshal(param)
 	if err != nil {
 		return nil, err
 	}
