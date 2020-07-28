@@ -14,6 +14,7 @@ var (
 	version  = cdiscord.Command("version", "display version")
 
 	message    = cdiscord.Command("message", "send message to discord")
+	username   = message.Flag("username", "username").Short('u').String()
 	alertLevel = message.Flag("level", "set alert level ('info' 'danger' 'health' 'warn')").Short('l').String()
 	webhookURL = message.Flag("webhook-url", "webhook url").Required().Short('w').String()
 
@@ -63,11 +64,19 @@ func main() {
 		return
 	}
 
-	text := "cdiscord message"
-	param := discord.EmbedParam{
-		Title:       text,
-		Description: string(in),
-		Color:       color,
+	user := "cdiscord"
+	if *username != "" {
+		user = *username
+	}
+
+	param := discord.WebhookParam{
+		Usename: user,
+		Embeds: []discord.Embeds{
+			{
+				Description: string(in),
+				Color:       color,
+			},
+		},
 	}
 
 	if ret, err := discord.SendMessage(param, *webhookURL); err != nil {
