@@ -19,7 +19,7 @@ var (
 	alertLevel = message.Flag("level", "set alert level ('info' 'danger' 'health' 'warn')").Short('l').String()
 	webhookURL = message.Flag("webhook-url", "webhook url").Required().Short('w').String()
 
-	cdiscordVer = "v0.0.1"
+	cdiscordVer = "v0.0.2"
 )
 
 type AlertLevel int
